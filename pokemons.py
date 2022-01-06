@@ -1,3 +1,8 @@
+import json
+from types import SimpleNamespace
+
+from Ex4.client_python import client
+from Ex4.client_python.client import Client
 
 
 class pokemons:
@@ -15,4 +20,9 @@ class pokemons:
         return self.pokemons[id]
 
     def get_info(self):
-        return self.pokemons.__repr__()
+        return Client.get_info()
+
+    def load_pokemon(self):
+        pokemons = client.get_pokemons()
+        pokemons_obj = json.loads(pokemons, object_hook=lambda d: SimpleNamespace(**d))
+        return pokemons_obj

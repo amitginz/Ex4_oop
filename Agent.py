@@ -1,6 +1,9 @@
+import json
 from math import sqrt
+from types import SimpleNamespace
 
-from Ex4.client_dierctory.DiGraph import DiGraph
+from Ex4.client_python import client
+from Ex4.client_python.DiGraph import DiGraph
 from GraphAlgo import GraphAlgo
 from pokemons import pokemons
 
@@ -26,10 +29,17 @@ class agent:
     def get_agent(self, id: int) -> dict:
         return self.agents[id]
 
+    def load_agent(self):
+        agents = json.loads(client.get_agents(),
+                        object_hook=lambda d: SimpleNamespace(**d)).Agents
+        agents = [agent.Agent for agent in agents]
+        return agents
+
     def chooseNextEdge(self, id: int) -> dict:
-        path = GraphAlgo.dijkstra(self.location[id])[1]
-        di = {"agent_id": id, "next_node_id": path[self.pokemon_edge(id)]}
-        return di
+        for agent in self.agents:
+            path = GraphAlgo.dijkstra(self.location[id])[1]
+            di = {"agent_id": agent, "next_node_id": path[self.pokemon_edge(agent)]}
+            return di
 
     def pokemon_edge(self, id: int) -> dict:  # locate the edge the pokemon on it
         graph = DiGraph();
@@ -45,8 +55,6 @@ class agent:
     def is_between(self,a,c,b):
         return self.distance(a,c) + self.distance(c,b) == self.distance(a,b)
 
-    # def get_graph(self):
-    #     graph_algo = GraphAlgo()
-    #     graph_algo.load_from_json("data\\A0.json")
-    #     return graph_algo.get_graph()
+    def get_graph(self):
+        return client.get_graph()
 
