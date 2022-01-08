@@ -1,11 +1,9 @@
 import json
 import math
 import os
-import sys
 from typing import List
 
 import pygame
-from matplotlib import pyplot as plt
 from pygame import display, RESIZABLE, gfxdraw
 
 from DiGraph import DiGraph
@@ -37,8 +35,8 @@ class GraphAlgo(GraphAlgoInterface):
 
     # load the graph from json file
     def load_from_json(self, file_name: str) -> bool:
-        with open(root_path + file_name, 'r') as file:
-            g = json.load(file)
+        with open(file_name, 'r') as file:
+            g = json.load(file_name)
         if g is None:
             return False
         graph = DiGraph()

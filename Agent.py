@@ -3,12 +3,12 @@ from math import sqrt
 from types import SimpleNamespace
 
 from Ex4.client_python import client
-from Ex4.client_python.DiGraph import DiGraph
+from DiGraph import DiGraph
 from GraphAlgo import GraphAlgo
-from pokemons import pokemons
+from pokemon import pokemon
 
 
-class agent:
+class Agent:
     def __init__(self, agents: dict = {}, location: dict = {}):
         self.agents: dict = agents
         self.location: dict = location
@@ -31,7 +31,7 @@ class agent:
 
     def load_agent(self):
         agents = json.loads(client.get_agents(),
-                        object_hook=lambda d: SimpleNamespace(**d)).Agents
+                            object_hook=lambda d: SimpleNamespace(**d)).Agents
         agents = [agent.Agent for agent in agents]
         return agents
 
@@ -41,13 +41,13 @@ class agent:
             di = {"agent_id": agent, "next_node_id": path[self.pokemon_edge(agent)]}
             return di
 
-    def pokemon_edge(self, id: int) -> dict:  # locate the edge the pokemon on it
+    def pokemon_edge(self, id: int) -> tuple:  # locate the edge the pokemon on it
         graph = DiGraph();
-        poke = pokemons()
+        poke = pokemon()
         for i,j in graph:
             if graph.edges[(i,j)] is not None:
-                if self.is_between(i,poke[id],j):
-                    return (i,j)
+                if self.is_between(i, poke[id], j):
+                    return i, j
 
     def distance(self,a,b):
         return sqrt((a.x - b.x)**2 + (a.y - b.y)**2)

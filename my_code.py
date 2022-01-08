@@ -1,18 +1,19 @@
-"""
-@author AchiyaZigi
-OOP - Ex4
-Very simple GUI example for python client to communicates with the server and "play the game!"
-"""
+# init pygame
+from operator import mod
 from types import SimpleNamespace
 
-from Ex4.client_python.client import Client
+import pygame
+from pygame import display
 import json
 from pygame import gfxdraw
 import pygame
 from pygame import *
 
-# init pygame
+from Ex4.client_python.client import Client
+from Ex4.graph.DiGraph import DiGraph
 from Ex4.graph.GraphAlgo import GraphAlgo
+from algo_game import algo_game
+from pokemon import pokemon
 
 WIDTH, HEIGHT = 1080, 720
 
@@ -28,6 +29,35 @@ pygame.font.init()
 
 client = Client()
 client.start_connection(HOST, PORT)
+
+pokemons = client.get_pokemons()
+poke = pokemon(0,0,0)
+poke.load_pokemon(pokemons)
+
+graph_json = client.get_graph()
+
+FONT = pygame.font.SysFont('Arial', 20, bold=True)
+
+
+data = json.loads(graph_json)
+Edges = data["Edges"]
+Nodes = data["Nodes"]
+dgi = DiGraph({}, {})
+for n in Nodes:
+    sp = n['pos'].split(',')
+    id1 = n['id']
+    dgi.add_node(id1,(float(sp[0]),float(sp[1])))
+for e in Edges:
+    src = e['src']
+    dest = e['dest']
+    weight = e['w']
+    dgi.add_edge(int(src), int(dest),float(weight))
+
+
+algo = GraphAlgo()
+algo.__init__(dgi)
+
+
 
 pokemons = client.get_pokemons()
 pokemons_obj = json.loads(pokemons, object_hook=lambda d: SimpleNamespace(**d))
@@ -86,7 +116,7 @@ client.start()
 The code below should be improved significantly:
 The GUI and the "algo" are mixed - refactoring using MVC design pattern is required.
 """
-
+i = 1
 while client.is_running() == 'true':
     pokemons = json.loads(client.get_pokemons(),
                           object_hook=lambda d: SimpleNamespace(**d)).Pokemons
@@ -149,7 +179,10 @@ while client.is_running() == 'true':
                            (int(agent.pos.x), int(agent.pos.y)), 10)
     # draw pokemons (note: should differ (GUI wise) between the up and the down pokemons (currently they are marked in the same way).
     for p in pokemons:
-        pygame.draw.circle(screen, Color(0, 255, 255), (int(p.pos.x), int(p.pos.y)), 10)
+        if p.type == -1:
+            pygame.draw.circle(screen, Color(0, 255, 255), (int(p.pos.x), int(p.pos.y)), 10)
+        else:
+            pygame.draw.circle(screen, Color(255, 0, 255), (int(p.pos.x), int(p.pos.y)), 10)
 
     # update screen changes
     display.update()
@@ -158,15 +191,27 @@ while client.is_running() == 'true':
     clock.tick(60)
 
     # choose next edge
+
     for agent in agents:
         if agent.dest == -1:
-            # path = GraphAlgo.dijkstra(self=graph1 ,start_node=0)[1]
-            # next_node = path[0]
-            next_node = (agent.src -1) % len(graph.Nodes)
+            path = algo.dijkstra(agent.src)[1]
+            next_node = path[(len(graph.Nodes)-i)% len(graph.Nodes)]
+            #next_node = (agent.src -1) % len(graph.Nodes)
             client.choose_next_edge(
                 '{"agent_id":'+str(agent.id)+', "next_node_id":'+str(next_node)+'}')
+            i += 1
+        # if agent.dest == 1:
+        #     path = algo.dijkstra(agent.src)[1]
+        #     if path[i % len(graph.Nodes)] is not None:
+        #         next_node = path[i % len(graph.Nodes)]
+        #     #next_node = (agent.src -1) % len(graph.Nodes)
+        #     client.choose_next_edge(
+        #         '{"agent_id":'+str(agent.id)+', "next_node_id":'+str(next_node)+'}')
+        #     i += 1
         ttl = client.time_to_end()
         print(ttl, client.get_info())
-
+        # for p in pokemons:
+        #     if agent.pos == p.pos:
+        #         client.move()
     client.move()
 # game over:
