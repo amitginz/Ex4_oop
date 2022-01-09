@@ -1,4 +1,15 @@
+import json
 import unittest
+
+from Agent import agent
+from Ex4.graph.DiGraph import DiGraph
+from Ex4.graph.GraphAlgo import GraphAlgo
+from pokemon import pokemon
+
+
+class gatest(unittest.TestCase):
+
+    import unittest
 from DiGraph import DiGraph
 from GraphAlgo import GraphAlgo
 
@@ -79,3 +90,48 @@ class TestGraphAlgo(unittest.TestCase):
         g_algo.load_from_json(file)  # init a GraphAlgo from a json file
         tes,res = g_algo.dijkstra(0)
         self.assertEqual(g_algo.dijkstra(0),(tes,res))
+
+    def test_get_Agents(self):
+        g_algo = GraphAlgo()
+        age = {
+            "Agents":[
+                {
+                    "Agent":
+                    {
+                        "id":0,
+                        "value":0.0,
+                        "src":0,
+                        "dest":1,
+                        "speed":1.0,
+                        "pos":"35.18753053591606,32.10378225882353,0.0"
+                    }
+                }
+            ]
+        }
+        json_object = json.dumps(age, indent = 4)
+        agent_tmp = g_algo.getAgent(json_object)
+        age1 = agent(0,0,0,1,1,(35.18753053591606,32.10378225882353))
+        self.assertEqual(agent_tmp,age1)
+
+
+    def test_get_pokemons(self):
+        g_algo = GraphAlgo()
+        poke = {
+            "Pokemons":[
+                {
+                    "Pokemon":{
+                        "value":5.0,
+                        "type":-1,
+                        "pos":"35.197656770719604,32.10191878639921,0.0"
+                    }
+                }
+            ]
+        }
+        json_object = json.dumps(poke, indent = 4)
+        poke_tmp = g_algo.getPokemons(json_object)
+        poke1 = pokemon(5,-1,(35.197656770719604,32.10191878639921),g_algo.get_graph())
+        self.assertEqual(poke1,poke_tmp)
+
+
+    def test_choosePokForAgent(self):
+        pass
