@@ -100,10 +100,12 @@ def my_scale(data, x=False, y=False):
 
 radius = 15
 
-client.add_agent("{\"id\":0}")
-#client.add_agent("{\"id\":1}")
-#client.add_agent("{\"id\":2}")
-#client.add_agent("{\"id\":3}")
+# Get the agents
+info = json.loads(client.get_info())
+num_agents = info['GameServer']['agents']
+for n in range(num_agents):
+    name = "{\"id\":"+str(n)+"}"
+    client.add_agent(name)
 
 # this commnad starts the server - the game is running now
 client.start()
