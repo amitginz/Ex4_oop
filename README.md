@@ -19,7 +19,7 @@ The goal: to maximize the amount of weights of the Pokemon collected, without ex
 6) GraphAlgo
 7) test for game
 
-# the UML:
+# the UML -  includ classes and functions
 
 
 ![Untitled-Copy of Page-1](https://user-images.githubusercontent.com/93703549/148680217-70dc5464-9871-41b9-8d33-ace4960e18fa.png)
