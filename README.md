@@ -32,7 +32,7 @@ The goal: to maximize the amount of weights of the Pokemon collected, without ex
 
 ![Untitled-Copy of Page-1](https://user-images.githubusercontent.com/93703549/148680217-70dc5464-9871-41b9-8d33-ace4960e18fa.png)
 
-# result - 
+# result : 
 
 ![image](https://user-images.githubusercontent.com/93703549/148685702-3e06323c-e14a-4474-af59-ce866bae1f29.png)
 
