@@ -1,19 +1,13 @@
 # init pygame
-from operator import mod
 from types import SimpleNamespace
-
-import pygame
-from pygame import display
 import json
 from pygame import gfxdraw
 import pygame
 from pygame import *
-
-from Agent import agent
 from Ex4.client_python.client import Client
 from Ex4.graph.DiGraph import DiGraph
 from Ex4.graph.GraphAlgo import GraphAlgo
-from pokemon import pokemon
+
 
 WIDTH, HEIGHT = 1080, 720
 
@@ -114,9 +108,11 @@ client.start()
 The code below should be improved significantly:
 The GUI and the "algo" are mixed - refactoring using MVC design pattern is required.
 """
-i = 1
-j = 1
+moves = 0
+
 while client.is_running() == 'true':
+
+
     pokemons1 = json.loads(client.get_pokemons(),
                           object_hook=lambda d: SimpleNamespace(**d)).Pokemons
     pokemons = [p.Pokemon for p in pokemons1]
@@ -138,12 +134,6 @@ while client.is_running() == 'true':
 
     agent_list = client.get_agents()
     agents1 = algo.getAgents(agent_list)
-
-    # check events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            exit(0)
 
     # refresh surface
     screen.fill(Color(0, 0, 0))
@@ -191,6 +181,38 @@ while client.is_running() == 'true':
         else:
             pygame.draw.circle(screen, Color(255, 0, 255), (int(p.pos.x), int(p.pos.y)), 10)
 
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            exit(0)
+
+    # Timer window
+    pygame.draw.rect(screen, (198,226,255), [20, 5, 75,45], border_radius=10)
+    time_text = FONT.render("Time: " + str(int(pygame.time.get_ticks() / 1000)), True, Color(0,0,0))
+    screen.blit(time_text, (23, 12))
+
+    # Stop button
+    button = pygame.Rect(20, 55, 75,45)
+    stop_text = FONT.render("Stop", True, Color(0, 0, 0))
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_pos = event.pos
+        if button.collidepoint(mouse_pos):
+            client.stop()
+    pygame.draw.rect(screen, (198,226,255), button, border_radius=10)
+    screen.blit(stop_text, (30, 65))
+
+    # Moves counter window
+    pygame.draw.rect(screen, (198,226,255),[20, 105, 75,45] ,border_radius=10)
+    moves_text = FONT.render("Moves:" + str(moves), True, Color(0,0,0))
+    screen.blit(moves_text, (20, 110))
+
+    # grade display window
+    info = json.loads(client.get_info())
+    grade = info['GameServer']['grade']
+    pygame.draw.rect(screen, (198,226,255),[20, 155, 75, 45] ,border_radius=10)
+    grade_text = FONT.render("grade:" + str(grade), True, Color(0,0,0))
+    screen.blit(grade_text, (20, 160))
+
     # update screen changes
     display.update()
 
@@ -198,7 +220,6 @@ while client.is_running() == 'true':
     clock.tick(60)
 
     # choose next edge
-
     pokemons_copy = pokemons1.copy()
     for a, agent in agents1.items():
         if agent.get_dest() == -1:
@@ -209,4 +230,5 @@ while client.is_running() == 'true':
         # Finds pokemon to which to send the agent
 
     client.move()
+    moves += 1
 # game over:
