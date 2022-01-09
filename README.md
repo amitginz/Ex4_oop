@@ -22,8 +22,8 @@ The goal: to maximize the amount of weights of the Pokemon collected, without ex
 # the UML:
 
 
-**first algorithm:**
-*there is pokimons on edges in directed wieghted graph.\
-*there is agent in some point on the graph.\
-*the agent will pick the closet pokimon to him and the most value pokemon by dijkstra algorithm and we do the same with the next pokimon(greedy algorithm).\
-*we will call move after eact planning of the travel and when he near picking the pokimon by the agent.
+![Untitled-Copy of Page-1](https://user-images.githubusercontent.com/93703549/148680217-70dc5464-9871-41b9-8d33-ace4960e18fa.png)
+
+
+
+
