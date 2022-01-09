@@ -27,3 +27,7 @@ The goal: to maximize the amount of weights of the Pokemon collected, without ex
 
 
 
+# how run our code:
+Download the codes to your Python, including the JAR file and download the JSON files.Run this command in terminal: java -jar Ex4_Server_v0.0.jar 0 (Instead of 0 you can put 
+0-15)and then click 'Run' in the my_code file. We're done - now the game will run!!
+
